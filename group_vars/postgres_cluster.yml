@@ -1,0 +1,16 @@
+node_labels:
+  postgres-cluster: "true" # всем серверам в группе kube-ingress ставить метку
+node_taints:
+  - "postgres-cluster=:NoSchedule"
+
+kubelet_config_extra_args:
+  cpuManagerPolicy: static
+  reservedSystemCPUs: "5"
+  evictionHard:
+    memory.available: "500Mi"
+    nodefs.available: "1Gi"
+    imagefs.available: "1Gi"
+  evictionMinimumReclaim:
+    memory.available: "0Mi"
+    nodefs.available: "2Gi"
+    imagefs.available: "2Gi"

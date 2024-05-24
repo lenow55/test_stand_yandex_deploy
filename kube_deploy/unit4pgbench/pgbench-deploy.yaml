@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unit4pgbench
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: unit4pgbench
+  template:
+    metadata:
+      labels:
+        app: unit4pgbench
+    spec:
+      tolerations:
+        - key: "postgres-bench"
+          operator: "Equal"
+      containers:
+        - name: unit4pgbench
+          image: lenow/test_unit4pgbench:v2.9
+          # command: ["/bin/bash", "-c", "--"]
+          # args: ["while true; do sleep 30; done;"]
+          command:
+            - "python"
+          args:
+            - "src/main.py"
+          resources:
+            requests:
+              memory: "4Gi"
+              cpu: "4"
+            limits:
+              memory: "4Gi"
+              cpu: "4"
+          env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cluster-prod-app
+                  key: password
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: cluster-prod-app
+                  key: username
+          volumeMounts:
+            - name: pgbench-config
+              mountPath: /app/environment
+            - name: pgbench-data
+              mountPath: /app/data
+      serviceAccount: pgbench-account
+      serviceAccountName: pgbench-account
+
+      volumes:
+        - name: pgbench-config
+          configMap:
+            name: pgbench-config
+        - name: pgbench-data
+          persistentVolumeClaim:
+            claimName: pgbench-pvc
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-pgbench
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 4Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: storage-pgbench
+  local:
+    path: /mnt/pgbench
+  claimRef:
+    name: pgbench-pvc
+    namespace: default
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - kubespray-pgbench-0
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pgbench-pvc
+  namespace: default
+spec:
+  storageClassName: storage-pgbench
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 4Gi

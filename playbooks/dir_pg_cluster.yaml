@@ -1,0 +1,15 @@
+- name: Create dirs on cluster postgres
+  hosts: postgres_cluster
+  tasks:
+    - name: Ping my hosts
+      ansible.builtin.ping:
+
+    - name: Print message
+      ansible.builtin.debug:
+        msg: Hello world
+
+    - name: Create dirs by root
+      ansible.builtin.file:
+        path: /mnt/postgres
+        state: directory
+        mode: 0775

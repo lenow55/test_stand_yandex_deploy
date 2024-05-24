@@ -1,0 +1,8 @@
+node_labels:
+  pgbench: "true" # всем серверам в группе
+node_taints:
+  - "postgres-bench=:NoSchedule"
+
+kubelet_config_extra_args:
+  cpuManagerPolicy: static
+  reservedSystemCPUs: "5"

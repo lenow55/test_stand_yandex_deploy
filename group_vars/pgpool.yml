@@ -1,0 +1,8 @@
+node_labels:
+  pgpool: "true" # всем серверам в группе kube-ingress ставить метку
+node_taints:
+  - "postgres-pool=:NoSchedule"
+
+kubelet_config_extra_args:
+  cpuManagerPolicy: static
+  reservedSystemCPUs: "7"

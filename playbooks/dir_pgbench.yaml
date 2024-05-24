@@ -1,0 +1,41 @@
+- name: Create dirs on pgbench
+  hosts: pgbench
+  tasks:
+    - name: Ping my hosts
+      ansible.builtin.ping:
+
+    - name: Print message
+      ansible.builtin.debug:
+        msg: Hello world
+
+    - name: Create dirs by root
+      ansible.builtin.file:
+        path: /mnt/pgbench
+        state: directory
+        mode: 0775
+
+    # - name: copy templates
+    #   copy:
+    #     src: ./in_data/templates/
+    #     dest: /mnt/pgbench/templates
+
+    # - name: copy testing pipeline
+    #   copy:
+    #     src: ./in_data/pipeline_1.json
+    #     dest: /mnt/pgbench/
+
+    - name: copy data
+      copy:
+        src: ./in_data/
+        dest: /mnt/pgbench/
+
+    # # для инициализации состояния
+    # - name: Create dirs by root
+    #   ansible.builtin.file:
+    #     path: /mnt/pgbench/output
+    #     state: directory
+    #     mode: 0775
+
+    # - name: Write backup script for each app
+    #   shell: |
+    #     echo '42' >> /mnt/pgbench/output/state

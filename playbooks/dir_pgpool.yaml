@@ -1,0 +1,15 @@
+- name: Create dirs on pgpool nodes
+  hosts: pgpool
+  tasks:
+    - name: Ping my hosts
+      ansible.builtin.ping:
+
+    - name: Print message
+      ansible.builtin.debug:
+        msg: Hello world
+
+    - name: Create dirs by root
+      ansible.builtin.file:
+        path: /mnt/pgpool
+        state: directory
+        mode: 0777

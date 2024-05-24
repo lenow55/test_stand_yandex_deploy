@@ -1,0 +1,6 @@
+.terraform/**
+.terraform*
+tags*
+private.auto.tfvars
+playbooks/in_data
+*.tfstate*
