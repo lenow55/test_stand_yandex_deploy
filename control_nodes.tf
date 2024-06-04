@@ -34,7 +34,7 @@ resource "yandex_compute_instance" "kubespray_control" {
     connection {
       type         = "ssh"
       user         = var.ssh_user
-      host         = self.network_interface.0.ip_address
+      host         = self.network_interface[0].ip_address
       private_key  = file(var.private_key_path)
       bastion_host = local.bastion_host
     }

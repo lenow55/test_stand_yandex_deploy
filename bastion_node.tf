@@ -33,7 +33,7 @@ resource "yandex_compute_instance" "kubespray_control_1_bastion" {
     connection {
       type        = "ssh"
       user        = var.ssh_user
-      host        = self.network_interface.0.nat_ip_address
+      host        = self.network_interface[0].nat_ip_address
       private_key = file(var.private_key_path)
     }
     inline = [
@@ -43,5 +43,5 @@ resource "yandex_compute_instance" "kubespray_control_1_bastion" {
 }
 
 locals {
-  bastion_host = yandex_compute_instance.kubespray_control_1_bastion.network_interface.0.nat_ip_address
+  bastion_host = yandex_compute_instance.kubespray_control_1_bastion.network_interface[0].nat_ip_address
 }

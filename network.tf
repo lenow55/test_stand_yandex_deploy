@@ -32,7 +32,7 @@ resource "yandex_lb_target_group" "control_group" {
     for_each = local.control_nodes
     content {
       subnet_id = yandex_vpc_subnet.cluster-subnet1.id
-      address   = target.value.network_interface.0.ip_address
+      address   = target.value.network_interface[0].ip_address
     }
   }
 }
