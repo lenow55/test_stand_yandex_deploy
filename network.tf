@@ -37,7 +37,7 @@ resource "yandex_lb_target_group" "control_group" {
   }
 }
 
-resource "yandex_lb_network_load_balancer" "internal_lb" {
+resource "yandex_lb_network_load_balancer" "external_lb" {
   name                = "api-server-loadbalancer-internal"
   deletion_protection = false
   listener {
@@ -63,14 +63,14 @@ resource "yandex_lb_network_load_balancer" "internal_lb" {
 
 locals {
   ip_external = [
-    for listener in yandex_lb_network_load_balancer.internal_lb.listener :
+    for listener in yandex_lb_network_load_balancer.external_lb.listener :
     [
       for spec in listener.external_address_spec : spec.address
     ]
     if listener.name == "api-servers-external-endpoint"
   ]
   port_external = [
-    for listener in yandex_lb_network_load_balancer.internal_lb.listener : listener.port
+    for listener in yandex_lb_network_load_balancer.external_lb.listener : listener.port
     if listener.name == "api-servers-external-endpoint"
   ]
 }
