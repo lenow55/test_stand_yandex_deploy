@@ -12,7 +12,6 @@ cp -f host.ini kubespray/inventory/sample/host.ini
 # перекидываю групповые переменные
 cp -f group_vars/lb_var.yml kubespray/inventory/sample/group_vars/all/
 cp -f group_vars/postgres_cluster.yml kubespray/inventory/sample/group_vars/
-cp -f group_vars/pgbench.yml kubespray/inventory/sample/group_vars/
 cp -f group_vars/pgpool.yml kubespray/inventory/sample/group_vars/
 rm -rf kubespray/inventory/sample/{credentials,artifacts}
 cd kubespray
@@ -27,7 +26,7 @@ deactivate
 
 kubeconfig="./kubespray/inventory/sample/artifacts/admin.conf"
 kubectl apply --server-side -f \
-	https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.22/releases/cnpg-1.22.2.yaml \
+	https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.23/releases/cnpg-1.23.1.yaml \
 	--kubeconfig=${kubeconfig}
 
 sleep 5
@@ -49,10 +48,6 @@ kubectl apply -f \
 
 kubectl apply -k ./kube_deploy/pg_cluster --kubeconfig=${kubeconfig}
 kubectl apply -k ./kube_deploy/pgpool --kubeconfig=${kubeconfig}
-
-sleep 240
-
-kubectl apply -k ./kube_deploy/unit4pgbench --kubeconfig=${kubeconfig}
 
 end_time=$(date +%s)
 date2=$(date +"%s")
